@@ -1,0 +1,180 @@
+#root {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+.encabezado {
+    background-color: #1f4e79;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+    .encabezado h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    .encabezado p {
+        margin: 8px 0 0;
+    }
+
+.navegacion {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    background-color: white;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+    .navegacion button {
+        padding: 10px 22px;
+        border: 1px solid #1f4e79;
+        border-radius: 6px;
+        background-color: white;
+        color: #1f4e79;
+        cursor: pointer;
+    }
+
+        .navegacion button:hover,
+        .navegacion .activo {
+            background-color: #1f4e79;
+            color: white;
+        }
+
+.contenido {
+    width: 90%;
+    max-width: 1100px;
+    margin: 30px auto;
+}
+
+.presentacion {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* LOS TRES PRODUCTOS EN UNA MISMA FILA */
+
+.lista-productos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 25px 0 35px;
+}
+
+.producto {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+    .producto h3 {
+        margin-top: 0;
+        font-size: 1.3rem;
+    }
+
+    .producto button {
+        padding: 9px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #1f4e79;
+        color: white;
+        cursor: pointer;
+    }
+
+        .producto button:hover {
+            background-color: #163a5c;
+        }
+
+.carrito {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+    .carrito h2 {
+        margin-top: 0;
+    }
+
+.total {
+    border-top: 1px solid #dddddd;
+    padding-top: 15px;
+    text-align: right;
+}
+
+@media (max-width: 700px) {
+    .lista-productos {
+        grid-template-columns: 1fr;
+    }
+
+    .navegacion {
+        flex-direction: column;
+    }
+}
+/* ==============================
+   EJERCICIO 2 - FORMULARIO
+   ============================== */
+
+.formulario-cliente {
+    max-width: 650px;
+    margin: 25px auto;
+    padding: 30px;
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.campo-formulario {
+    margin-bottom: 18px;
+}
+
+    .campo-formulario label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .campo-formulario input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+        .campo-formulario input:focus {
+            outline: none;
+            border-color: #385784;
+        }
+
+.formulario-cliente button {
+    background-color: #385784;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+    .formulario-cliente button:hover {
+        background-color: #2d476d;
+    }
+
+.srv-validation-message {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #b3261e;
+}
