@@ -112,6 +112,6 @@ npm run build
 
 ## Despliegue
 
-El código fuente del proyecto se encuentra almacenado en GitHub.
+El código fuente del proyecto se encuentra almacenado en GitHub. (https://github.com/jessicacruzat-code/Examen_Programacion_Componentes.git)
 
-La aplicación web se encuentra desplegada mediante Netlify.
+La aplicación web se encuentra desplegada mediante Netlify.(https://examen-programacion-componentes.netlify.app/)
