@@ -1,4 +1,6 @@
 import { Component } from 'react'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '../../firebase/firebase'
 import Producto from './Producto'
 
 class ListaProductos extends Component {
@@ -6,12 +8,30 @@ class ListaProductos extends Component {
         super(props)
 
         this.state = {
-            productos: [
-                { id: 1, nombre: 'Notebook', precio: 599990 },
-                { id: 2, nombre: 'Teclado', precio: 29990 },
-                { id: 3, nombre: 'Mouse', precio: 19990 }
-            ],
+            productos: [],
             carrito: []
+        }
+    }
+
+    componentDidMount() {
+        this.cargarProductos()
+    }
+
+    cargarProductos = async () => {
+        try {
+            const consulta = await getDocs(collection(db, 'productos'))
+
+            const productosFirebase = consulta.docs.map((documento) => ({
+                id: documento.id,
+                ...documento.data()
+            }))
+
+            this.setState({
+                productos: productosFirebase
+            })
+
+        } catch (error) {
+            console.error('Error al cargar los productos:', error)
         }
     }
 
@@ -36,6 +56,31 @@ class ListaProductos extends Component {
                 ]
             })
         }
+    }
+    disminuirCantidad = (producto) => {
+        if (producto.cantidad > 1) {
+            this.setState({
+                carrito: this.state.carrito.map((item) =>
+                    item.id === producto.id
+                        ? { ...item, cantidad: item.cantidad - 1 }
+                        : item
+                )
+            })
+        } else {
+            this.setState({
+                carrito: this.state.carrito.filter(
+                    (item) => item.id !== producto.id
+                )
+            })
+        }
+    }
+
+    eliminarDelCarrito = (producto) => {
+        this.setState({
+            carrito: this.state.carrito.filter(
+                (item) => item.id !== producto.id
+            )
+        })
     }
 
     calcularTotal = () => {
@@ -67,21 +112,69 @@ class ListaProductos extends Component {
                     <p>El carrito está vacío.</p>
                 ) : (
                     <>
-                        <ul>
-                            {this.state.carrito.map((producto) => (
-                                <li key={producto.id}>
-                                    {producto.nombre} - Cantidad: {producto.cantidad}
-                                    {' - $'}
-                                    {(producto.precio * producto.cantidad)
-                                        .toLocaleString('es-CL')}
-                                </li>
-                            ))}
-                        </ul>
+                            <div className="carrito-lista">
+                                {this.state.carrito.map((producto) => (
+                                    <div className="carrito-item" key={producto.id}>
+
+                                        <div>
+                                            <strong>{producto.nombre}</strong>
+                                            <p>
+                                                ${(producto.precio * producto.cantidad)
+                                                    .toLocaleString('es-CL')}
+                                            </p>
+                                        </div>
+
+                                        <div className="controles-cantidad">
+
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-secondary btn-sm"
+                                                onClick={() => this.disminuirCantidad(producto)}
+                                            >
+                                                −
+                                            </button>
+
+                                            <span>{producto.cantidad}</span>
+
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-secondary btn-sm"
+                                                onClick={() => this.agregarAlCarrito(producto)}
+                                            >
+                                                +
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-danger btn-sm"
+                                                onClick={() => this.eliminarDelCarrito(producto)}
+                                            >
+                                                Eliminar
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                ))}
+                            </div>
 
                         <h3>
                             Total: $
                             {this.calcularTotal().toLocaleString('es-CL')}
                         </h3>
+
+                        <button
+                            type="button"
+                            className="btn btn-success mt-3"
+                            onClick={() =>
+                                this.props.continuarPedido(
+                                    this.state.carrito,
+                                    this.calcularTotal()
+                                    )
+                                }
+                        >
+                            Continuar pedido
+                        </button>
                     </>
                 )}
             </section>

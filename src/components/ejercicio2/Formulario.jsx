@@ -11,7 +11,8 @@ class Formulario extends Component {
             nombre: '',
             correo: '',
             telefono: '',
-            direccion: ''
+            direccion: '',
+            pedidoConfirmado: false
         }
 
         this.validator = new SimpleReactValidator({
@@ -31,22 +32,30 @@ class Formulario extends Component {
     manejarEnvio = async (event) => {
         event.preventDefault()
 
+        if (!this.props.carrito || this.props.carrito.length === 0) {
+            alert('Debe agregar al menos un producto antes de confirmar el pedido.')
+            return
+        }
+
         if (this.validator.allValid()) {
             try {
-                await addDoc(collection(db, 'clientes'), {
+                await addDoc(collection(db, 'pedidos'), {
                     nombre: this.state.nombre,
                     correo: this.state.correo,
                     telefono: this.state.telefono,
-                    direccion: this.state.direccion
+                    direccion: this.state.direccion,
+                    productos: this.props.carrito,
+                    total: this.props.total
                 })
 
-                alert('Cliente guardado correctamente en Firestore.')
+                alert('Pedido guardado correctamente en Firestore.')
 
                 this.setState({
                     nombre: '',
                     correo: '',
                     telefono: '',
-                    direccion: ''
+                    direccion: '',
+                    pedidoConfirmado: true
                 })
 
                 this.validator.hideMessages()
@@ -64,11 +73,32 @@ class Formulario extends Component {
     }
 
     render() {
+        if (this.state.pedidoConfirmado) {
+            return (
+                <section>
+                    <div className="formulario-cliente text-center">
+                        <h2>Pedido realizado correctamente</h2>
+
+                        <p className="mt-3">
+                            Su pedido fue registrado correctamente.
+                        </p>
+
+                        <h3 className="mt-4">
+                            Total: ${this.props.total.toLocaleString('es-CL')}
+                        </h3>
+
+                        <p className="mt-3">
+                            Para realizar un nuevo pedido, vuelva a la Carta.
+                        </p>
+                    </div>
+                </section>
+            )
+        }
         return (
             <section>
                 <div className="presentacion">
-                    <h2>Ejercicio 2 - Formulario de Cliente</h2>
-                    <p>Complete los datos del cliente.</p>
+                    <h2>Datos del cliente</h2>
+                    <p>Complete sus datos para confirmar el pedido.</p>
                 </div>
 
                 <form
@@ -170,12 +200,47 @@ class Formulario extends Component {
                             'required'
                         )}
                     </div>
+                    <div className="resumen-pedido mt-4 mb-4">
+                        <h3>Resumen del pedido</h3>
+
+                        {this.props.carrito && this.props.carrito.length > 0 ? (
+                            <>
+                                {this.props.carrito.map((producto) => (
+                                    <div
+                                        key={producto.id}
+                                        className="d-flex justify-content-between mb-2"
+                                    >
+                                        <span>
+                                            {producto.nombre} × {producto.cantidad}
+                                        </span>
+
+                                        <span>
+                                            ${(producto.precio * producto.cantidad)
+                                                .toLocaleString('es-CL')}
+                                        </span>
+                                    </div>
+                                ))}
+
+                                <hr />
+
+                                <div className="d-flex justify-content-between">
+                                    <strong>Total</strong>
+
+                                    <strong>
+                                        ${this.props.total.toLocaleString('es-CL')}
+                                    </strong>
+                                </div>
+                            </>
+                        ) : (
+                            <p>No hay productos en el pedido.</p>
+                        )}
+                    </div>
 
                     <button
                         type="submit"
                         className="btn btn-primary"
                     >
-                        Guardar cliente
+                        Confirmar pedido
                     </button>
                 </form>
             </section>

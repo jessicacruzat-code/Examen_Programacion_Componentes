@@ -2,17 +2,30 @@ import { useState } from 'react'
 import './App.css'
 import ListaProductos from './components/ejercicio1/ListaProductos'
 import Formulario from './components/ejercicio2/Formulario'
-import Usuario from './components/ejercicio3/Usuario'
-
+import AccesoPersonal from './components/ejercicio3/AccesoPersonal'
 function App() {
     const [moduloActivo, setModuloActivo] = useState('productos')
+
+    const [pedido, setPedido] = useState({
+        carrito: [],
+        total: 0
+    })
+
+    const continuarPedido = (carrito, total) => {
+        setPedido({
+            carrito: carrito,
+            total: total
+        })
+
+        setModuloActivo('formulario')
+    }
 
     return (
         <div className="app">
 
             <header className="encabezado">
-                <h1>Programación de Componentes</h1>
-                <p>Examen Final</p>
+                <h1>Pub</h1>
+                <p>Pedidos y reservas</p>
             </header>
 
             <nav className="navegacion">
@@ -21,21 +34,21 @@ function App() {
                     className={moduloActivo === 'productos' ? 'activo' : ''}
                     onClick={() => setModuloActivo('productos')}
                 >
-                    Productos
+                    Carta
                 </button>
 
                 <button
                     className={moduloActivo === 'formulario' ? 'activo' : ''}
                     onClick={() => setModuloActivo('formulario')}
                 >
-                    Formulario
+                    Datos del cliente
                 </button>
 
                 <button
-                    className={moduloActivo === 'usuario' ? 'activo' : ''}
-                    onClick={() => setModuloActivo('usuario')}
+                    className={moduloActivo === 'cuenta' ? 'activo' : ''}
+                    onClick={() => setModuloActivo('cuenta')}
                 >
-                    Usuario
+                    Acceso personal
                 </button>
 
             </nav>
@@ -45,22 +58,25 @@ function App() {
                 {moduloActivo === 'productos' && (
                     <>
                         <div className="presentacion">
-                            <h2>Ejercicio 1 - Productos y Carrito</h2>
+                            <h2>Nuestra Carta</h2>
                             <p>
-                                Seleccione los productos que desea agregar al carrito.
+                                Seleccione los productos que desea agregar a su pedido.
                             </p>
                         </div>
 
-                        <ListaProductos />
+                        <ListaProductos continuarPedido={continuarPedido} />
                     </>
                 )}
 
                 {moduloActivo === 'formulario' && (
-                    <Formulario />
+                    <Formulario
+                        carrito={pedido.carrito}
+                        total={pedido.total}
+                    />
                 )}
 
-                {moduloActivo === 'usuario' && (
-                    <Usuario />
+                {moduloActivo === 'cuenta' && (
+                    <AccesoPersonal />
                 )}
 
             </main>
